@@ -1,5 +1,10 @@
 const socket = io("ws://localhost:8080");
 
+const OPTION1 = "Klassisch";
+const OPTION2 = "mit Käse";
+const OPTION3 = "Vegi";
+const OPTION4 = "Individuell";
+
 // Elements
 const addBtn = document.querySelector("#enter");
 const ulZubereitung = document.querySelector(".ul-zubereitung");
@@ -7,6 +12,7 @@ const ulAbholung = document.querySelector(".ul-abholung");
 const optionBtns = document.querySelectorAll(".option");
 const orderNumElement = document.querySelector(".order-num");
 const selectQuantity = document.querySelector("#quantity");
+const checkBoxes = document.querySelectorAll("#popup input");
 const itemsZubereitung = {};
 const itemsAbholung = {}
 const currentItems = [itemsZubereitung, itemsAbholung];
@@ -75,17 +81,21 @@ function addOrder() {
 
     ulZubereitung.appendChild(orderDiv);
 
-    // save the data in currenItems Object (in itemsZubereitung)
+    // save the data (ingredients of the order) in currenItems Object (in itemsZubereitung)
     let selectedProduct = selectedBtn.innerText;
-    let selectedAmount = selectQuantity.selectedIndex + 1;
-    let data = [selectedProduct, selectedAmount];
+    let data = getIngredients(selectedProduct);
     currentItems[0][orderNum] = data;
+    
     // increment order Number
     orderNumElement.innerText = Number(orderNum) + 1;
+    
     // remove click animation
     selectedBtn.classList.remove("clicked");
-    // Select auf default 1 zurück
-    selectQuantity.selectedIndex = 0;
+
+    // remove checked boxes for individual choice
+    checkBoxes.forEach( checkBox => {
+        checkBox.checked = false;
+    })
     
     // send the data over to the Display
     sendData(currentItems);
@@ -95,10 +105,11 @@ function ready(e) {
     let clickedBtn = e.target
     let clickedElement = clickedBtn.parentNode;
     let currentUl = clickedElement.parentNode;
+    
     if (currentUl.classList[0] === "ul-zubereitung") {
         // append element for pick-up
         ulAbholung.appendChild(clickedElement);
-        // get the data (id: [product, amount]) an pass it itemsAbholung
+        // get the data (id: [product, amount]) an pass it to itemsAbholung
         let id = clickedElement.innerText;
         currentItems[1][id] = currentItems[0][id];
         delete currentItems[0][id];
@@ -124,7 +135,7 @@ function cancel(e) {
     } else if (currentUl.classList[0] === "ul-abholung") {
         // append element back to "in production" list
         ulZubereitung.appendChild(clickedElement);
-        // get the data (id: [product, amount]) an pass it itemsZubereitung
+        // get the data (id: [product, amount]) an pass it to itemsZubereitung
         let id = clickedElement.innerText;
         currentItems[0][id] = currentItems[1][id];
         delete currentItems[1][id];
@@ -132,6 +143,25 @@ function cancel(e) {
     sendData(currentItems);
 }
 
+function getIngredients(selectedProduct) {
+    let ingredients = [];
+    switch(selectedProduct) {
+        case OPTION1:
+            ingredients.push("Speck", "Zwiebeln");
+            break;
+        case OPTION2:
+            ingredients.push("Speck", "Zwiebeln", "Käse");
+            break;
+        case OPTION3:
+            ingredients.push("Lauch", "Pilze");
+            break;
+        case OPTION4:
+            ingredients.push("Zwiebeln");
+            break;
+    }
+
+    return ingredients;
+}
 
 
 // Websocket functions
@@ -139,3 +169,15 @@ function sendData(dataToSend) {
     socket.emit("message", dataToSend);
 }
 
+// Funktion zum Öffnen des Popups
+function openPopup() {
+    document.getElementById('popup').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+
+}
+
+// Funktion zum Schließen des Popups
+function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+}
