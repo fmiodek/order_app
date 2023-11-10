@@ -7,7 +7,9 @@ const ulAbholung = document.querySelector(".ul-abholung");
 const optionBtns = document.querySelectorAll(".option");
 const orderNumElement = document.querySelector(".order-num");
 const selectQuantity = document.querySelector("#quantity");
-const currentItems = {};
+const itemsZubereitung = {};
+const itemsAbholung = {}
+const currentItems = [itemsZubereitung, itemsAbholung];
 
 // Event Listeners
 addBtn.addEventListener("click", addOrder);
@@ -73,11 +75,11 @@ function addOrder() {
 
     ulZubereitung.appendChild(orderDiv);
 
-    // save the data in currenItems Object
+    // save the data in currenItems Object (in itemsZubereitung)
     let selectedProduct = selectedBtn.innerText;
     let selectedAmount = selectQuantity.selectedIndex + 1;
     let data = [selectedProduct, selectedAmount];
-    currentItems[orderNum] = data;
+    currentItems[0][orderNum] = data;
     // increment order Number
     orderNumElement.innerText = Number(orderNum) + 1;
     // remove click animation
@@ -96,12 +98,18 @@ function ready(e) {
     if (currentUl.classList[0] === "ul-zubereitung") {
         // append element for pick-up
         ulAbholung.appendChild(clickedElement);
+        // get the data (id: [product, amount]) an pass it itemsAbholung
+        let id = clickedElement.innerText;
+        currentItems[1][id] = currentItems[0][id];
+        delete currentItems[0][id];
     } else if (currentUl.classList[0] === "ul-abholung") {
         // delete element
         clickedElement.remove();
         // remove from current items list
-        removeFromProduction(clickedElement);
+        let id = clickedElement.innerText;
+        delete currentItems[1][id];
     }
+    sendData(currentItems);
 }
 
 function cancel(e) {
@@ -111,20 +119,20 @@ function cancel(e) {
         // delete Element
         clickedElement.remove();
         // remove from current items list
-        removeFromProduction(clickedElement);
+        let id = clickedElement.innerText;
+        delete currentItems[0][id];
     } else if (currentUl.classList[0] === "ul-abholung") {
         // append element back to "in production" list
         ulZubereitung.appendChild(clickedElement);
+        // get the data (id: [product, amount]) an pass it itemsZubereitung
+        let id = clickedElement.innerText;
+        currentItems[0][id] = currentItems[1][id];
+        delete currentItems[1][id];
     }
-}
-
-function removeFromProduction(clickedElement) {
-    let orderId = clickedElement.innerText;
-    delete currentItems[orderId];
+    sendData(currentItems);
 }
 
 
-        
 
 // Websocket functions
 function sendData(dataToSend) {
