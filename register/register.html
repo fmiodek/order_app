@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kasse</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="./register.css" />
+  </head>
+  <body>
+    <div class="flex-container">
+      <div class="container-zubereitung">
+        <p>Bestellnummer: <span class="order-num">1</span></p>
+        <div class="options">
+          <button id="0" class="option">Klassisch</button>
+          <button id="1" class="option">mit Käse</button>
+          <button id="2" class="option">Vegi</button>
+          <button id="3" class="option">Option 4</button>
+        </div>
+        <div class="input-container">
+          <form>
+            <label for="quantity">Anzahl:</label>
+            <select id="quantity" name="quantity">
+              <option value="option1">1</option>
+              <option value="option2">2</option>
+              <option value="option3">3</option>
+              <option value="option4">4</option>
+              <option value="option4">5</option>
+            </select>
+          </form>
+          <button id="enter">Bestätigen</button>
+        </div>
+        <ul class="ul-zubereitung">
+          <!--order element-->
+        </ul>
+      </div>
+      <div class="container-abholung">
+        <h1>Abholbereit</h1>
+        <ul class="ul-abholung">
+          <!--order element-->
+        </ul>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js" integrity="sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="./register.js"></script>
+  </body>
+</html>
