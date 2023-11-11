@@ -53,6 +53,7 @@ h1 {
     margin: 20px;
     color: white;
     margin-bottom: 100px;
+    z-index: 1;
 }
 
 .container-zubereitung p{

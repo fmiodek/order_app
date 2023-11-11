@@ -5,6 +5,13 @@
     font-family:Arial, Helvetica, sans-serif
 }
 
+body {
+    -webkit-user-select: none; 
+    -moz-user-select: none;
+    -ms-user-select: none; 
+    user-select: none; 
+}
+
 .flex-container {
     display: flex;
 }
@@ -46,6 +53,7 @@ h1 {
     margin: 20px;
     color: white;
     margin-bottom: 100px;
+    z-index: 1;
 }
 
 .order-element {
@@ -60,6 +68,7 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
 }
 
 i {
