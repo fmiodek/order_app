@@ -9,6 +9,16 @@
     display: flex;
 }
 
+.logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-51.5%,-50%) rotate(1deg);
+    width: 50vw;
+    height: 50vw;
+    opacity: 0.1;
+}
+
 .container-zubereitung {
     min-height: 100vh;
     width: 50vw;
