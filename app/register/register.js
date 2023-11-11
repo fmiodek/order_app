@@ -1,10 +1,14 @@
 const serverPort = 8080;
 const socket = io(`ws://localhost:${serverPort}`);
 
-const OPTION1 = "Klassisch";
-const OPTION2 = "mit Käse";
-const OPTION3 = "Vegi";
-const OPTION4 = "Individuell";
+// Constants for getIngredients method -> easy to change
+const OPTION1 = document.getElementById("opt1").innerText; // "Klassisch"
+const OPTION2 = document.getElementById("opt2").innerText; // "mit Käse"
+const OPTION3 = document.getElementById("opt3").innerText; // "Vegi"
+const OPTION4 = document.getElementById("opt4").innerText; // "Individuell"
+const Zutaten1 = ["Speck", "Zwiebeln"];
+const Zutaten2 = ["Speck", "Zwiebeln", "Käse"];
+const Zutaten3 = ["Lauch", "Pilze"];
 
 // Elements
 const ulZubereitung = document.querySelector(".ul-zubereitung");
@@ -165,13 +169,13 @@ function getIngredients(selectedProduct) {
     let ingredients = [];
     switch(selectedProduct) {
         case OPTION1:
-            ingredients.push("Speck", "Zwiebeln");
+            ingredients.push(...Zutaten1);
             break;
         case OPTION2:
-            ingredients.push("Speck", "Zwiebeln", "Käse");
+            ingredients.push(...Zutaten2);
             break;
         case OPTION3:
-            ingredients.push("Lauch", "Pilze");
+            ingredients.push(...Zutaten3);
             break;
         case OPTION4:
             checkBoxes.forEach( checkbox => {
@@ -182,6 +186,7 @@ function getIngredients(selectedProduct) {
             })
             break;
     }
+    console.log(ingredients);
     return ingredients;
 }
 
