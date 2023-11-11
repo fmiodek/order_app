@@ -1,4 +1,5 @@
-const socket = io("ws://localhost:8080");
+const serverPort = 8080;
+const socket = io(`ws://localhost:${serverPort}`);
 
 const OPTION1 = "Klassisch";
 const OPTION2 = "mit Käse";
@@ -6,12 +7,15 @@ const OPTION3 = "Vegi";
 const OPTION4 = "Individuell";
 
 // Elements
-const addBtn = document.querySelector("#enter");
 const ulZubereitung = document.querySelector(".ul-zubereitung");
 const ulAbholung = document.querySelector(".ul-abholung");
+
+const addBtn = document.querySelector("#enter");
 const optionBtns = document.querySelectorAll(".option");
+const individualBtn = document.querySelector("#opt4");
+const closeIndividualBtn = document.querySelector("#closeIndividual");
+
 const orderNumElement = document.querySelector(".order-num");
-const selectQuantity = document.querySelector("#quantity");
 const checkBoxes = document.querySelectorAll("#popup input");
 const itemsZubereitung = {};
 const itemsAbholung = {}
@@ -19,6 +23,7 @@ const currentItems = [itemsZubereitung, itemsAbholung];
 
 // Event Listeners
 addBtn.addEventListener("click", addOrder);
+
 optionBtns.forEach( (optionBtn) => {
     optionBtn.addEventListener("click", () => {    
         optionBtns.forEach( (other) => {
@@ -28,6 +33,8 @@ optionBtns.forEach( (optionBtn) => {
     })
 })
 
+individualBtn.addEventListener("click", openPopup);
+closeIndividualBtn.addEventListener("click", closePopup);
 
 function addOrder() {
     const orderNum = orderNumElement.innerText;
@@ -48,7 +55,7 @@ function addOrder() {
     // create order element
     /*<div class="order-element">
         <button class="cancel"><i class="fas fa-x"></i></button>
-        <p>{Bestellnummer}</p>
+        <span>{Bestellnummer}</span>
         <button class="ready"><i class="fas fa-arrow-right"></i></button>
     </div>*/
 
@@ -126,12 +133,22 @@ function ready(e) {
 function cancel(e) {
     let clickedElement = e.target.parentNode;
     let currentUl = clickedElement.parentNode;
-    if (currentUl.classList[0] === "ul-zubereitung") {
-        // delete Element
-        clickedElement.remove();
-        // remove from current items list
-        let id = clickedElement.innerText;
-        delete currentItems[0][id];
+    if (currentUl.classList[0] === "ul-zubereitung") {      
+        // Popup to confirm if you really want to delete the item
+        openDeletePopup();
+        let confirmDeleteBtn = document.querySelector("#confirmDelete");
+        let cancelDeleteBtn = document.querySelector("#cancelDelete");
+        confirmDeleteBtn.addEventListener("click", () => {
+            // delete Element
+            clickedElement.remove();
+            // remove from current items list
+            let id = clickedElement.innerText;
+            delete currentItems[0][id];
+            
+            closeDeletePopup();
+        });
+        cancelDeleteBtn.addEventListener("click", closeDeletePopup);
+
     } else if (currentUl.classList[0] === "ul-abholung") {
         // append element back to "in production" list
         ulZubereitung.appendChild(clickedElement);
@@ -142,6 +159,7 @@ function cancel(e) {
     }
     sendData(currentItems);
 }
+
 
 function getIngredients(selectedProduct) {
     let ingredients = [];
@@ -163,21 +181,24 @@ function getIngredients(selectedProduct) {
     return ingredients;
 }
 
+function openPopup() {
+    document.getElementById('popup').style.display = 'block';
+}
+
+function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+}
+
+function openDeletePopup() {
+    document.getElementById('deletePopup').style.display = 'block';
+}
+
+function closeDeletePopup() {
+    document.getElementById('deletePopup').style.display = 'none';
+}
+
 
 // Websocket functions
 function sendData(dataToSend) {
     socket.emit("message", dataToSend);
-}
-
-// Funktion zum Öffnen des Popups
-function openPopup() {
-    document.getElementById('popup').style.display = 'block';
-    document.getElementById('overlay').style.display = 'block';
-
-}
-
-// Funktion zum Schließen des Popups
-function closePopup() {
-    document.getElementById('popup').style.display = 'none';
-    document.getElementById('overlay').style.display = 'none';
 }

@@ -18,13 +18,13 @@
       <div class="container-zubereitung">
         <p>Bestellnummer: <span class="order-num">1</span></p>
         <div class="options">
-          <button id="0" class="option">Klassisch</button>
-          <button id="1" class="option">mit Käse</button>
-          <button id="2" class="option">Vegi</button>
-          <button id="3" class="option" onclick="openPopup()">Individuell</button>
+          <button id="opt1" class="option">Klassisch</button>
+          <button id="opt2" class="option">mit Käse</button>
+          <button id="opt3" class="option">Vegi</button>
+          <button id="opt4" class="option">Individuell</button>
         </div>
         <div class="input-container">
-          <button id="enter">Bestätigen</button>
+          <button id="enter">Bestellung Absenden</button>
         </div>
         <ul class="ul-zubereitung">
           <!--order element-->
@@ -51,7 +51,12 @@
       <br>
       <label><input type="checkbox" name="option1"> Tomaten</label>
       <br>
-      <button onclick="closePopup()">Auswahl Bestätigen</button>
+      <button id="closeIndividual">Auswahl Bestätigen</button>
+    </div>
+    <div id="deletePopup">
+      <h2>Bestellung wirklich löschen?</h2>
+      <button id="confirmDelete">Ja</button>
+      <button id="cancelDelete">Nein</button>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js" integrity="sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="./register.js"></script>
