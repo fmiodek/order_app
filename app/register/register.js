@@ -143,8 +143,9 @@ function cancel(e) {
             clickedElement.remove();
             // remove from current items list
             let id = clickedElement.innerText;
+            console.log(id);
             delete currentItems[0][id];
-            
+            sendData(currentItems);
             closeDeletePopup();
         });
         cancelDeleteBtn.addEventListener("click", closeDeletePopup);
@@ -156,8 +157,8 @@ function cancel(e) {
         let id = clickedElement.innerText;
         currentItems[0][id] = currentItems[1][id];
         delete currentItems[1][id];
+        sendData(currentItems);
     }
-    sendData(currentItems);
 }
 
 
