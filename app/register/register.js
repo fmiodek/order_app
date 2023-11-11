@@ -143,7 +143,6 @@ function cancel(e) {
             clickedElement.remove();
             // remove from current items list
             let id = clickedElement.innerText;
-            console.log(id);
             delete currentItems[0][id];
             sendData(currentItems);
             closeDeletePopup();
@@ -175,10 +174,14 @@ function getIngredients(selectedProduct) {
             ingredients.push("Lauch", "Pilze");
             break;
         case OPTION4:
-            ingredients.push("Zwiebeln");
+            checkBoxes.forEach( checkbox => {
+                if (checkbox.checked) {
+                    let ingredient = checkbox.parentElement.innerText;
+                    ingredients.push(ingredient);
+                }
+            })
             break;
     }
-
     return ingredients;
 }
 
