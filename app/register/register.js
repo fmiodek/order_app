@@ -1,3 +1,4 @@
+// Websocket
 const serverPort = 8080;
 const socket = io(`ws://localhost:${serverPort}`);
 
@@ -26,8 +27,8 @@ const itemsAbholung = {}
 const currentItems = [itemsZubereitung, itemsAbholung];
 
 // Event Listeners
+document.addEventListener("DOMContentLoaded", loadData);
 addBtn.addEventListener("click", addOrder);
-
 optionBtns.forEach( (optionBtn) => {
     optionBtn.addEventListener("click", () => {    
         optionBtns.forEach( (other) => {
@@ -36,9 +37,9 @@ optionBtns.forEach( (optionBtn) => {
         optionBtn.classList.toggle("clicked");
     })
 })
-
 individualBtn.addEventListener("click", openPopup);
 closeIndividualBtn.addEventListener("click", closePopup);
+
 
 function addOrder() {
     const orderNum = orderNumElement.innerText;
@@ -96,7 +97,10 @@ function addOrder() {
     let selectedProduct = selectedBtn.innerText;
     let data = getIngredients(selectedProduct);
     currentItems[0][orderNum] = data;
-    
+
+    //send data to backend for database
+    insertOrder(Number(orderNum));
+
     // increment order Number
     orderNumElement.innerText = Number(orderNum) + 1;
     
@@ -124,13 +128,18 @@ function ready(e) {
         let id = clickedElement.innerText;
         currentItems[1][id] = currentItems[0][id];
         delete currentItems[0][id];
+        // send data to backend
+        updateOrder(Number(id), 2);
     } else if (currentUl.classList[0] === "ul-abholung") {
         // delete element
         clickedElement.remove();
         // remove from current items list
         let id = clickedElement.innerText;
         delete currentItems[1][id];
+        // send data to backend
+        updateOrder(Number(id), 3);
     }
+    // send data to display
     sendData(currentItems);
 }
 
@@ -148,6 +157,9 @@ function cancel(e) {
             // remove from current items list
             let id = clickedElement.innerText;
             delete currentItems[0][id];
+            // send data to backend
+            updateOrder(Number(id), 0);
+            // send data to display
             sendData(currentItems);
             closeDeletePopup();
         });
@@ -160,6 +172,9 @@ function cancel(e) {
         let id = clickedElement.innerText;
         currentItems[0][id] = currentItems[1][id];
         delete currentItems[1][id];
+        // send data to backend
+        updateOrder(Number(id), 1);
+        // send data to display
         sendData(currentItems);
     }
 }
@@ -211,3 +226,120 @@ function closeDeletePopup() {
 function sendData(dataToSend) {
     socket.emit("message", dataToSend);
 }
+
+// Backend
+function insertOrder(id) { 
+    data = {
+        orderId: id
+    };
+
+    fetch('/submit', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json',
+          },
+    }).then(response => {
+        if (response.ok) {
+          console.log('Data submitted successfully');
+        } else {
+          console.error('Error submitting data');
+        }
+    });
+}
+
+function updateOrder(id, status) {
+    data = {
+        orderId: id,
+        statusCode: status
+    }
+
+    fetch('/update', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).then(response => {
+        if (response.ok) {
+          console.log('Data submitted successfully');
+        } else {
+          console.error('Error submitting data');
+        }
+    });
+}
+
+function loadData() {
+    fetch('/load')
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        console.log('Data fetched:', data);
+        data.prep.forEach( item => {
+            let id = item["id"];
+            let status = item["status"];
+            itemsZubereitung[id] = ["dummy data"];
+            loadItem(id, status);
+        })
+        data.pickup.forEach( item => {
+            let id = item["id"];
+            let status = item["status"];
+            itemsAbholung[id] = ["dummy data"]
+            loadItem(id, status);
+        })
+        orderNumElement.innerText = Number(data.latestId) + 1;
+
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }
+
+
+  function loadItem(id, status) {
+    const orderNum = id;
+
+    // create order element
+    /*<div class="order-element">
+        <button class="cancel"><i class="fas fa-x"></i></button>
+        <span>{Bestellnummer}</span>
+        <button class="ready"><i class="fas fa-arrow-right"></i></button>
+    </div>*/
+
+    let orderDiv = document.createElement("div");
+    orderDiv.classList.add("order-element");
+
+    let cancelBtn = document.createElement("button");
+    cancelBtn.classList.add("cancel")
+    let cancelIcon = document.createElement("i");
+    cancelIcon.classList.add("fas");
+    cancelIcon.classList.add("fa-x");
+    cancelBtn.appendChild(cancelIcon);
+
+    let orderText = document.createElement("span");
+    orderText.innerHTML = orderNum;
+
+    let readyBtn = document.createElement("button");
+    readyBtn.classList.add("ready")
+    let readyIcon = document.createElement("i");
+    readyIcon.classList.add("fas");
+    readyIcon.classList.add("fa-check");
+    readyBtn.appendChild(readyIcon);
+
+    cancelBtn.addEventListener("click", cancel);
+    readyBtn.addEventListener("click", ready);
+
+    orderDiv.appendChild(cancelBtn);
+    orderDiv.appendChild(orderText);
+    orderDiv.appendChild(readyBtn);
+
+    if (status === 1) {
+        ulZubereitung.appendChild(orderDiv);
+    }
+    else if (status === 2) {
+        ulAbholung.appendChild(orderDiv);
+    }
+    // send the data over to the Display
+    sendData(currentItems);
+  }
