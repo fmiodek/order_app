@@ -294,10 +294,10 @@ function loadData() {
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  }
+}
 
 
-  function loadItem(id, status) {
+function loadItem(id, status) {
     const orderNum = id;
 
     // create order element
@@ -342,4 +342,4 @@ function loadData() {
     }
     // send the data over to the Display
     sendData(currentItems);
-  }
+}

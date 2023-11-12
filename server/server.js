@@ -87,9 +87,9 @@ db.all('SELECT * FROM orders', (err, rows) => {
 app.get('/load', (req, res) => {
 
     const data = {
-      "prep": inPrep,
-      "pickup": readyForPickup,
-      "latestId": latestOrderNum
+        "prep": inPrep,
+        "pickup": readyForPickup,
+        "latestId": latestOrderNum
     };
   
     // Prepare JSON response
