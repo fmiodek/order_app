@@ -344,3 +344,4 @@ function loadItem(id, status) {
     // send the data over to the Display
     sendData(currentItems);
 }
+

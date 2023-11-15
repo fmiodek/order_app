@@ -26,7 +26,7 @@ const appPort = 3000;
 app.use(bodyParser.json());
 app.use(express.static("../app"));
 
-app.listen(appPort, () => {
+const frontServer = app.listen(appPort, () => {
     console.log(`listening on port ${appPort}`);
 });
 
@@ -104,7 +104,30 @@ app.post('/submit', (req, res) => {
     dbInsertOrder(id, ingredients);
 
     // send data to bash for printing
-    const bashCommand = `echo "${id + "\n" + ingredients}" > test.txt`; 
+    /*
+    # Schriftgröße auf  10 fach horrizontal und 10 fach vertikal skallieren
+    echo -e '\x1d\x21\x22OrderNr.:'
+    echo -e '005'
+    #skallierung aufheben
+    echo -e '\x1d\x21\x0'
+    echo -e  Vegetarisch
+    echo -e
+    echo -e
+    #schneiden mit Vorschub von 65pxl
+    echo -e '\x1d\x56\x41\x10'
+    */
+
+    
+    /*
+    const bashCommand = 
+        `echo -e "\\x1d\\x21\\x22OrderNr.:\\n
+        ${id}\\n
+        \\x1d\\x21\\x0\\n
+        ${ingredients}\\n\\n\\n
+        \\x1d\\x56\\x41\\x10" > /dev/usb/lp0`;
+    */
+
+    const bashCommand = `echo "${id + "\\n" + ingredients}" > test.txt`; 
 
     exec(bashCommand, (error, stdout, stderr) => {
         if (error) {
