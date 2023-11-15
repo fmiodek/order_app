@@ -17,10 +17,6 @@ io.on("connection", socket => {
 socketServer.listen(serverPort, () => console.log(`listening on port ${serverPort}`));
 
 
-
-
-
-
 // Server für Frontend
 const express = require("express");
 const bodyParser = require('body-parser');
@@ -35,14 +31,12 @@ app.listen(appPort, () => {
 });
 
 
-
 // Database
 // status codes for db
 const ZUBEREITUNG = 1;
 const ABHOLUNG = 2;
 const ABGEHOLT = 3;
 const GELÖSCHT = 0;
-
 
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database('orders.db');
@@ -54,9 +48,7 @@ db.run('CREATE TABLE IF NOT EXISTS orders (id INTEGER, ingredients TEXT, status 
     }
 });
 
-
 // Load existing data from database on server start
-
 const inPrep = [];
 const readyForPickup = [];
 let latestOrderNum = 0;
@@ -86,6 +78,7 @@ db.all('SELECT * FROM orders', (err, rows) => {
         }
     })
 });
+
 
 // load content from database to frontend
 app.get('/load', (req, res) => {
@@ -124,7 +117,8 @@ app.post('/submit', (req, res) => {
     res.status(200).json({ message: 'Data submitted successfully' }); // Send a successful response
 });
 
-  app.post('/update', (req, res) => {
+
+app.post('/update', (req, res) => {
     
     const data = req.body; 
     const id = data.id;
@@ -135,8 +129,6 @@ app.post('/submit', (req, res) => {
   
     res.status(200).json({ message: 'Data submitted successfully' }); // Send a successful response
 });
-
-
 
 
 // functions for handling database

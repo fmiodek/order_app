@@ -17,8 +17,8 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-51.5%,-50%) rotate(1deg);
-    width: 50vw;
-    height: 50vw;
+    width: 40vw;
+    height: 80vh;
     opacity: 0.1;
 }
 
@@ -29,7 +29,7 @@ body {
 .container-zubereitung {
     min-height: 100vh;
     width: 50vw;
-    background-color: rgb(200, 0, 0);
+    background-color: rgba(0, 0, 0, 0.8);
     border-right: 1px solid white;
     text-align: center;
 }
@@ -37,7 +37,7 @@ body {
 .container-abholung {
     min-height: 100vh;
     width: 50vw;
-    background-color: rgba(0, 170, 0);
+    background-color: rgba(0, 0, 0, 0.8);
     border-left: 1px solid white;
     text-align: center;
 }
@@ -54,6 +54,14 @@ h1 {
     color: white;
     margin-bottom: 100px;
     z-index: 1;
+}
+
+.container-zubereitung h1 {
+    background-color: rgb(17, 124, 138);
+}
+
+.container-abholung h1 {
+background-color: green;
 }
 
 .container-zubereitung p{
