@@ -95,11 +95,11 @@ function addOrder() {
 
     // save the data (ingredients of the order) in currenItems Object (in itemsZubereitung)
     let selectedProduct = selectedBtn.innerText;
-    let data = getIngredients(selectedProduct);
-    currentItems[0][orderNum] = data;
+    let ingredients = getIngredients(selectedProduct);
+    currentItems[0][orderNum] = ingredients;
 
     //send data to backend for database
-    insertOrder(Number(orderNum));
+    insertOrder(Number(orderNum), ingredients);
 
     // increment order Number
     orderNumElement.innerText = Number(orderNum) + 1;
@@ -228,9 +228,10 @@ function sendData(dataToSend) {
 }
 
 // Backend
-function insertOrder(id) { 
+function insertOrder(id, ingredients) { 
     data = {
-        orderId: id
+        id: id,
+        ingredients: ingredients
     };
 
     fetch('/submit', {
@@ -250,8 +251,8 @@ function insertOrder(id) {
 
 function updateOrder(id, status) {
     data = {
-        orderId: id,
-        statusCode: status
+        id: id,
+        status: status
     }
 
     fetch('/update', {

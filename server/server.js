@@ -1,7 +1,7 @@
 // Server für Websocket Communication
 const socketServer = require("http").createServer();
 const serverPort = 8080; 
-
+const { exec } = require('child_process');
 const io = require("socket.io")(socketServer, {
     cors: {origin: "*"}
 });
@@ -15,6 +15,10 @@ io.on("connection", socket => {
 })
 
 socketServer.listen(serverPort, () => console.log(`listening on port ${serverPort}`));
+
+
+
+
 
 
 // Server für Frontend
@@ -42,7 +46,7 @@ const GELÖSCHT = 0;
 
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database('orders.db');
-db.run('CREATE TABLE IF NOT EXISTS orders (id INTEGER, status INTEGER)', (err) => {
+db.run('CREATE TABLE IF NOT EXISTS orders (id INTEGER, ingredients TEXT, status INTEGER)', (err) => {
     if (err) {
       console.error('Error creating table:', err);
     } else {
@@ -100,10 +104,22 @@ app.get('/load', (req, res) => {
 // get data from frontend
 app.post('/submit', (req, res) => {
     const data = req.body; // Access the submitted data
-    const id = data.orderId;
+    const id = data.id;
+    const ingredients = data.ingredients.join(', ');
   
     // save to database
-    dbInsertOrder(id);
+    dbInsertOrder(id, ingredients);
+
+    // send data to bash for printing
+    const bashCommand = `echo "${id + "\n" + ingredients}" > test.txt`; 
+
+    exec(bashCommand, (error, stdout, stderr) => {
+        if (error) {
+        console.error(`Fehler beim Ausführen des Bash-Befehls: ${error}`);
+        } else {
+        console.log(`Test mit ${id + "\n" + ingredients}`);
+        }
+    });
 
     res.status(200).json({ message: 'Data submitted successfully' }); // Send a successful response
 });
@@ -111,8 +127,8 @@ app.post('/submit', (req, res) => {
   app.post('/update', (req, res) => {
     
     const data = req.body; 
-    const id = data.orderId;
-    const status = data.statusCode;
+    const id = data.id;
+    const status = data.status;
   
     // update database
     dbUpdateStatus(id, status);
@@ -124,10 +140,11 @@ app.post('/submit', (req, res) => {
 
 
 // functions for handling database
-function dbInsertOrder(id) {
-    db.run(`INSERT INTO orders (id, status) VALUES (?, ?)`, [id, 1]);
+function dbInsertOrder(id, ingredients) {
+    db.run(`INSERT INTO orders (id, ingredients, status) VALUES (?, ?, ?)`, [id, ingredients, 1]);
 }
 
 function dbUpdateStatus(id, status) {
     db.run('UPDATE orders SET status = ? WHERE id = ?', [status, id]);
 }
+
