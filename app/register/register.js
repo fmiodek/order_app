@@ -186,13 +186,16 @@ function getIngredients(selectedProduct) {
     let ingredients = [];
     switch(selectedProduct) {
         case OPTION1:
-            ingredients.push(...Zutaten1);
+            //ingredients.push(...Zutaten1);
+            ingredients.push(OPTION1);
             break;
         case OPTION2:
-            ingredients.push(...Zutaten2);
+            //ingredients.push(...Zutaten2);
+            ingredients.push(OPTION2);
             break;
         case OPTION3:
-            ingredients.push(...Zutaten3);
+            //ingredients.push(...Zutaten3);
+            ingredients.push(OPTION3);
             break;
         case OPTION4:
             checkBoxes.forEach( checkbox => {

@@ -52,7 +52,7 @@ h1 {
     font-size: 4vw;
     margin: 20px;
     margin-bottom: 100px;
-    margin-top: 28px;
+    margin-top: 25px;
     color: white;
     display: flex;
     justify-content: space-around;
@@ -79,8 +79,7 @@ h1 {
 }
 
 .option {
-    position: relative;
-    height: 73px;
+    height: 6vw;
     width: 11vw;
     border-radius: 10px;
     background-color: white;
@@ -124,7 +123,7 @@ select {
 
 .input-container button {
     margin: 5px; 
-    height: 4vw;
+    height: 5vw;
     width: 30vw;
     border-radius: 10px;
     background-color: white;

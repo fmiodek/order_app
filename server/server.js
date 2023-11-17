@@ -154,7 +154,7 @@ echo -e '\\x1d\\x56\\x41\\x10'`;
     });
     
 
-    const bashCommand = './order.sh > /dev/usb/lp0';
+    const bashCommand = `say Immer wenn du hungrig bist, wirst du zur Divaa. Zeit dass du den Flammkuchen mit Bestellnummer ${id} abholst`;
 
     exec(bashCommand, (error, stdout, stderr) => {
         if (error) {
