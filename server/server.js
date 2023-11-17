@@ -213,7 +213,7 @@ app.post('/update', (req, res) => {
 
 app.get('/print', (req, res) => {    
     
-    db.all(`SELECT ingredients as Variante, COUNT(*) as Anzahl FROM orders GROUP BY ingredients ORDER BY Anzahl DESC`, (err, rows) => {
+    db.all(`SELECT ingredients as Variante, COUNT(*) as Anzahl FROM orders WHERE status != 0 GROUP BY ingredients ORDER BY Anzahl DESC`, (err, rows) => {
         if (err) {
           res.status(500).json({ error: err.message });
           return;

@@ -1,16 +1,16 @@
 echo -e '\x1d\x21\x22'
 echo -e 'OrderNr.:'
-echo -e '11'
+echo -e '7'
 echo -e '\x1d\x21\x11'
-echo -e 'Speck, Zwiebeln, Käse'
+echo -e 'Lauch, Pilze'
 echo -e
 echo -e
 echo -e '\x1d\x56\x41\x10'
 echo -e '\x1d\x21\x22'
 echo -e 'OrderNr.:'
-echo -e '11'
+echo -e '7'
 echo -e '\x1d\x21\x11'
-echo -e 'Speck, Zwiebeln, Käse'
+echo -e 'Lauch, Pilze'
 echo -e
 echo -e
 echo -e '\x1d\x56\x41\x10'
