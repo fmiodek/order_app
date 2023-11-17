@@ -154,13 +154,13 @@ echo -e '\\x1d\\x56\\x41\\x10'`;
     });
     
 
-    const bashCommand = `say Immer wenn du hungrig bist, wirst du zur Divaa. Zeit dass du den Flammkuchen mit Bestellnummer ${id} abholst`;
+    const bashCommand = `echo "Bestellnummer ${id}"`;
 
     exec(bashCommand, (error, stdout, stderr) => {
         if (error) {
         console.error(`Fehler beim Ausführen des Bash-Befehls: ${error}`);
         } else {
-        console.log(bashCommand);
+        console.log(id);
         }
     });
 

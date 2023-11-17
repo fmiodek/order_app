@@ -1,6 +1,7 @@
 // Websocket
 const serverPort = 8080;
-const socket = io(`ws://localhost:${serverPort}`);
+const serverIP = window.location.href.split("//")[1].split(":")[0];
+const socket = io(`ws://${serverIP}:${serverPort}`);
 
 // Constants for getIngredients method -> easy to change
 const OPTION1 = document.getElementById("opt1").innerText; // "Klassisch"
@@ -276,6 +277,7 @@ function updateOrder(id, status) {
 }
 
 function loadData() {
+    console.log(serverIP);
     fetch('/load')
       .then(response => {
         return response.json();

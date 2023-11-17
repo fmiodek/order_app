@@ -1,4 +1,7 @@
-const socket = io("ws://localhost:8080");
+// Websocket
+const serverPort = 8080;
+const serverIP = window.location.href.split("//")[1].split(":")[0];
+const socket = io(`ws://${serverIP}:${serverPort}`);
 
 const ulZubereitung = document.querySelector(".ul-zubereitung");
 const ulAbholung = document.querySelector(".ul-abholung");
@@ -19,3 +22,4 @@ function updateUl (ul, data) {
         ul.appendChild(orderDiv);
     });
 }
+
