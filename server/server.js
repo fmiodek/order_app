@@ -100,6 +100,12 @@ app.post('/insert', (req, res) => {
     const data = req.body; // Access the submitted data
     const id = data.id;
     const ingredients = data.ingredients.join(', ');
+
+    // save item in inPrep Array
+    let item = {id: id, status: 1};
+    inPrep.push(item);
+    // update id
+    latestOrderNum = id; 
   
     // save to database
     dbInsertOrder(id, ingredients);
@@ -168,6 +174,37 @@ app.post('/update', (req, res) => {
     const id = data.id;
     const status = data.status;
   
+    // update Arrays and latestOrderNum
+    item = {id: id, status: status};
+    switch(status) {
+        case 0:
+            indexToRemove = inPrep.findIndex( item => item.id === id);
+            if (indexToRemove !== -1) {
+                inPrep.splice(indexToRemove, 1);
+            }
+            break;
+        case 1:
+            indexToRemove = readyForPickup.findIndex( item => item.id === id);
+            if (indexToRemove !== -1) {
+                readyForPickup.splice(indexToRemove, 1);
+                inPrep.push(item);
+            } 
+            break;
+        case 2:
+            indexToRemove = inPrep.findIndex( item => item.id === id);
+            if (indexToRemove !== -1) {
+                inPrep.splice(indexToRemove, 1);
+                readyForPickup.push(item);
+            }
+            break;
+        case 3:
+            indexToRemove = readyForPickup.findIndex( item => item.id === id);
+            if (indexToRemove !== -1) {
+                readyForPickup.splice(indexToRemove, 1);
+            }
+            break;
+    }
+
     // update database
     dbUpdateStatus(id, status);
   
@@ -189,7 +226,7 @@ app.get('/print', (req, res) => {
             sum += Number(row.Anzahl);
             //TODO: Ergebnis in Datei schreiben oder drucken
         });
-        console.log("-----------------------------");
+        console.log("------------------------------");
         console.log(`Gesamt verkauft: ${sum}`);
     });
 
