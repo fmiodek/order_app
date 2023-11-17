@@ -19,6 +19,7 @@ const addBtn = document.querySelector("#enter");
 const optionBtns = document.querySelectorAll(".option");
 const individualBtn = document.querySelector("#opt4");
 const closeIndividualBtn = document.querySelector("#closeIndividual");
+const printInfoBtn = document.querySelector("#info");
 
 const orderNumElement = document.querySelector(".order-num");
 const checkBoxes = document.querySelectorAll("#popup input");
@@ -39,6 +40,7 @@ optionBtns.forEach( (optionBtn) => {
 })
 individualBtn.addEventListener("click", openPopup);
 closeIndividualBtn.addEventListener("click", closePopup);
+printInfoBtn.addEventListener("click", printInfo);
 
 
 function addOrder() {
@@ -234,7 +236,7 @@ function insertOrder(id, ingredients) {
         ingredients: ingredients
     };
 
-    fetch('/submit', {
+    fetch('/insert', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -286,7 +288,7 @@ function loadData() {
         data.pickup.forEach( item => {
             let id = item["id"];
             let status = item["status"];
-            itemsAbholung[id] = ["dummy data"]
+            itemsAbholung[id] = ["dummy data"];
             loadItem(id, status);
         })
         orderNumElement.innerText = Number(data.latestId) + 1;
@@ -345,3 +347,18 @@ function loadItem(id, status) {
     sendData(currentItems);
 }
 
+
+function printInfo() {
+    fetch('/print', {
+        method: 'GET',
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP-Fehler! Status: ${response.status}`);
+        }
+        console.log('Anfrage an den Server erfolgreich gesendet');
+    })
+    .catch(error => {
+        console.error('Fehler beim Senden der Anfrage:', error);
+    });
+}

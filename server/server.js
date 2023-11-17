@@ -1,4 +1,5 @@
 // Server für Websocket Communication
+const fs = require('fs');
 const socketServer = require("http").createServer();
 const serverPort = 8080; 
 const { exec } = require('child_process');
@@ -95,7 +96,7 @@ app.get('/load', (req, res) => {
 
 
 // get data from frontend
-app.post('/submit', (req, res) => {
+app.post('/insert', (req, res) => {
     const data = req.body; // Access the submitted data
     const id = data.id;
     const ingredients = data.ingredients.join(', ');
@@ -105,35 +106,55 @@ app.post('/submit', (req, res) => {
 
     // send data to bash for printing
     /*
-    # Schriftgröße auf  10 fach horrizontal und 10 fach vertikal skallieren
-    echo -e '\x1d\x21\x22OrderNr.:'
+    # Schriftgröße auf 3-fach horrizontal und 3-fach vertikal skallieren
+    echo -e '\x1d\x21\x22'
+    echo -e 'OrderNr.:'
     echo -e '005'
     #skallierung aufheben
-    echo -e '\x1d\x21\x0'
-    echo -e  Vegetarisch
+    echo -e '\x1d\x21\x11'
+    echo -e 'Vegetarisch'
     echo -e
     echo -e
     #schneiden mit Vorschub von 65pxl
     echo -e '\x1d\x56\x41\x10'
     */
-
     
-    /*
-    const bashCommand = 
-        `echo -e "\\x1d\\x21\\x22OrderNr.:\\n
-        ${id}\\n
-        \\x1d\\x21\\x0\\n
-        ${ingredients}\\n\\n\\n
-        \\x1d\\x56\\x41\\x10" > /dev/usb/lp0`;
-    */
+    const fs = require('fs');
 
-    const bashCommand = `echo "${id + "\\n" + ingredients}" > test.txt`; 
+    const textToWrite = 
+`echo -e '\\x1d\\x21\\x22'
+echo -e 'OrderNr.:'
+echo -e '${id}'
+echo -e '\\x1d\\x21\\x11'
+echo -e '${ingredients}'
+echo -e
+echo -e
+echo -e '\\x1d\\x56\\x41\\x10'
+echo -e '\\x1d\\x21\\x22'
+echo -e 'OrderNr.:'
+echo -e '${id}'
+echo -e '\\x1d\\x21\\x11'
+echo -e '${ingredients}'
+echo -e
+echo -e
+echo -e '\\x1d\\x56\\x41\\x10'`;
+
+    fs.writeFile('order.sh', textToWrite, (err) => {
+        if (err) {
+            console.error('Error writing to file:', err);
+        } else {
+            console.log('Text has been written to the file');
+        }
+    });
+    
+
+    const bashCommand = './order.sh > /dev/usb/lp0';
 
     exec(bashCommand, (error, stdout, stderr) => {
         if (error) {
         console.error(`Fehler beim Ausführen des Bash-Befehls: ${error}`);
         } else {
-        console.log(`Test mit ${id + "\n" + ingredients}`);
+        console.log(bashCommand);
         }
     });
 
@@ -151,6 +172,28 @@ app.post('/update', (req, res) => {
     dbUpdateStatus(id, status);
   
     res.status(200).json({ message: 'Data submitted successfully' }); // Send a successful response
+});
+
+app.get('/print', (req, res) => {    
+    
+    db.all(`SELECT ingredients as Variante, COUNT(*) as Anzahl FROM orders GROUP BY ingredients ORDER BY Anzahl DESC`, (err, rows) => {
+        if (err) {
+          res.status(500).json({ error: err.message });
+          return;
+        }
+        let sum = 0;
+        console.log("Anzahl verkaufter Flammkuchen");
+        console.log("-----------------------------");
+        rows.forEach( row => {
+            console.log(`${row.Variante}: ${row.Anzahl}`);
+            sum += Number(row.Anzahl);
+            //TODO: Ergebnis in Datei schreiben oder drucken
+        });
+        console.log("-----------------------------");
+        console.log(`Gesamt verkauft: ${sum}`);
+    });
+
+    res.send('Server-Funktion erfolgreich ausgelöst');
 });
 
 
