@@ -1,8 +1,6 @@
 // Server für Websocket Communication
-const fs = require('fs');
 const socketServer = require("http").createServer();
 const serverPort = 8080; 
-const { exec } = require('child_process');
 const io = require("socket.io")(socketServer, {
     cors: {origin: "*"}
 });
@@ -31,6 +29,11 @@ const frontServer = app.listen(appPort, () => {
     console.log(`listening on port ${appPort}`);
 });
 
+// for printing
+const { exec } = require('child_process');
+const shellOptions = {
+    shell: '/bin/bash',
+}
 
 // Database
 // status codes for db
@@ -110,59 +113,7 @@ app.post('/insert', (req, res) => {
     // save to database
     dbInsertOrder(id, ingredients);
 
-    // send data to bash for printing
-    /*
-    # Schriftgröße auf 3-fach horrizontal und 3-fach vertikal skallieren
-    echo -e '\x1d\x21\x22'
-    echo -e 'OrderNr.:'
-    echo -e '005'
-    #skallierung aufheben
-    echo -e '\x1d\x21\x11'
-    echo -e 'Vegetarisch'
-    echo -e
-    echo -e
-    #schneiden mit Vorschub von 65pxl
-    echo -e '\x1d\x56\x41\x10'
-    */
-    
-    const fs = require('fs');
-
-    const textToWrite = 
-`echo -e '\\x1d\\x21\\x22'
-echo -e 'OrderNr.:'
-echo -e '${id}'
-echo -e '\\x1d\\x21\\x11'
-echo -e '${ingredients}'
-echo -e
-echo -e
-echo -e '\\x1d\\x56\\x41\\x10'
-echo -e '\\x1d\\x21\\x22'
-echo -e 'OrderNr.:'
-echo -e '${id}'
-echo -e '\\x1d\\x21\\x11'
-echo -e '${ingredients}'
-echo -e
-echo -e
-echo -e '\\x1d\\x56\\x41\\x10'`;
-
-    fs.writeFile('order.sh', textToWrite, (err) => {
-        if (err) {
-            console.error('Error writing to file:', err);
-        } else {
-            console.log('Text has been written to the file');
-        }
-    });
-    
-
-    const bashCommand = `echo "Bestellnummer ${id}"`;
-
-    exec(bashCommand, (error, stdout, stderr) => {
-        if (error) {
-        console.error(`Fehler beim Ausführen des Bash-Befehls: ${error}`);
-        } else {
-        console.log(id);
-        }
-    });
+    printOrder(id, ingredients);
 
     res.status(200).json({ message: 'Data submitted successfully' }); // Send a successful response
 });
@@ -212,23 +163,31 @@ app.post('/update', (req, res) => {
 });
 
 app.get('/print', (req, res) => {    
-    
+    let selledProducts = "";
+    let sum = 0;
     db.all(`SELECT ingredients as Variante, COUNT(*) as Anzahl FROM orders WHERE status != 0 GROUP BY ingredients ORDER BY Anzahl DESC`, (err, rows) => {
         if (err) {
           res.status(500).json({ error: err.message });
           return;
         }
-        let sum = 0;
+        /*
         console.log("Anzahl verkaufter Flammkuchen");
         console.log("-----------------------------");
         rows.forEach( row => {
             console.log(`${row.Variante}: ${row.Anzahl}`);
             sum += Number(row.Anzahl);
-            //TODO: Ergebnis in Datei schreiben oder drucken
         });
         console.log("------------------------------");
         console.log(`Gesamt verkauft: ${sum}`);
+        */
+
+        rows.forEach( row => {
+            selledProducts.concat(`${row.Variante}: ${row.Anzahl}\n`);
+            sum += Number(row.Anzahl);
+        });
     });
+
+    printSells(selledProducts, sum);
 
     res.send('Server-Funktion erfolgreich ausgelöst');
 });
@@ -243,3 +202,45 @@ function dbUpdateStatus(id, status) {
     db.run('UPDATE orders SET status = ? WHERE id = ?', [status, id]);
 }
 
+
+// function for printing
+function printOrder(id, ingredients) {
+    
+    const bashCommand = 
+`echo -e "\\x1d\\x21\\x22
+OrderNr.:
+${id}
+\\x1d\\x21\\x11
+${ingredients}\n\n
+\\x1d\\x56\\x41\\x10
+\\x1d\\x21\\x22
+OrderNr.:
+${id}
+\\x1d\\x21\\x11
+${ingredients}\n\n
+\\x1d\\x56\\x41\\x10" > /dev/usb/lp0`;
+    
+    exec(bashCommand, shellOptions, (error, stdout, stderr) => {
+        if (error) {
+        console.error(`Fehler beim Ausführen des Bash-Befehls: ${error}`);
+        } else {
+        console.log(id);
+        }
+    });
+};
+
+function printSells(selledProducts, sum) {
+    const bashCommand = `
+echo -e "\\x1d\\x21\\x00
+< Anzahl verkaufter Flammkuchen >
+${selledProducts}
+Gesamt verkauft: ${sum}" > /dev/usb/lp0`;
+
+    exec(bashCommand, shellOptions, (error, stdout, stderr) => {
+        if (error) {
+        console.error(`Fehler beim Ausführen des Bash-Befehls: ${error}`);
+        } else {
+        console.log(sum);
+        }
+    });    
+};
