@@ -229,8 +229,8 @@ ${ingredients}\n\n
 };
 
 function printSells(selledProducts, sum) {
-    const bashCommand = `
-echo -e "\\x1d\\x21\\x00
+    const bashCommand = 
+`echo -e "\\x1d\\x21\\x00
 < Anzahl verkaufter Flammkuchen >\n
 ${selledProducts}
 Gesamt verkauft: ${sum}\n\n
@@ -244,3 +244,26 @@ Gesamt verkauft: ${sum}\n\n
         }
     });    
 };
+
+
+// Handle Ctrl+C in sehll to gracefully shut down the server
+process.on('SIGINT', () => {
+    console.log(' Received SIGINT. Closing server gracefully...');
+    
+    // Close the servers
+    frontServer.close(() => {
+        console.log('Frontend Server closed. Exiting process...');
+    });
+    socketServer.close(() => {
+        console.log('Websocket Server closed. Exiting process...');
+    });
+});
+
+
+/*
+Overview print commands:
+Schriftgröße x1: \\x1d\\x21\\x00
+Schriftgröße x2: \\x1d\\x21\\x11
+Schriftgröße x2: \\x1d\\x21\\x22
+Paper-Cut: \\x1d\\x56\\x41\\x10
+*/
