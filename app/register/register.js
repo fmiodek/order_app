@@ -5,11 +5,11 @@ const socket = io(`ws://${serverIP}:${serverPort}`);
 
 // Constants for getIngredients method -> easy to change
 const OPTION1 = document.getElementById("opt1").innerText; // "Klassisch"
-const OPTION2 = document.getElementById("opt2").innerText; // "mit Käse"
+const OPTION2 = document.getElementById("opt2").innerText; // "mit Kaese"
 const OPTION3 = document.getElementById("opt3").innerText; // "Vegi"
 const OPTION4 = document.getElementById("opt4").innerText; // "Individuell"
 const Zutaten1 = ["Speck", "Zwiebeln"];
-const Zutaten2 = ["Speck", "Zwiebeln", "Käse"];
+const Zutaten2 = ["Speck", "Zwiebeln", "Kaese"];
 const Zutaten3 = ["Lauch", "Pilze"];
 
 // Elements

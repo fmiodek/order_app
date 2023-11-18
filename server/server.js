@@ -163,8 +163,7 @@ app.post('/update', (req, res) => {
 });
 
 app.get('/print', (req, res) => {    
-    let selledProducts = "";
-    let sum = 0;
+    
     db.all(`SELECT ingredients as Variante, COUNT(*) as Anzahl FROM orders WHERE status != 0 GROUP BY ingredients ORDER BY Anzahl DESC`, (err, rows) => {
         if (err) {
           res.status(500).json({ error: err.message });
@@ -181,13 +180,14 @@ app.get('/print', (req, res) => {
         console.log(`Gesamt verkauft: ${sum}`);
         */
 
+        let selledProducts = "";
+        let sum = 0;
         rows.forEach( row => {
-            selledProducts.concat(`${row.Variante}: ${row.Anzahl}\n`);
+            selledProducts = selledProducts + `${row.Variante}: ${row.Anzahl}\n`;
             sum += Number(row.Anzahl);
         });
+        printSells(selledProducts, sum);
     });
-
-    printSells(selledProducts, sum);
 
     res.send('Server-Funktion erfolgreich ausgelöst');
 });
@@ -203,9 +203,8 @@ function dbUpdateStatus(id, status) {
 }
 
 
-// function for printing
+// functions for printing
 function printOrder(id, ingredients) {
-    
     const bashCommand = 
 `echo -e "\\x1d\\x21\\x22
 OrderNr.:
@@ -232,9 +231,10 @@ ${ingredients}\n\n
 function printSells(selledProducts, sum) {
     const bashCommand = `
 echo -e "\\x1d\\x21\\x00
-< Anzahl verkaufter Flammkuchen >
+< Anzahl verkaufter Flammkuchen >\n
 ${selledProducts}
-Gesamt verkauft: ${sum}" > /dev/usb/lp0`;
+Gesamt verkauft: ${sum}\n\n
+\\x1d\\x56\\x41\\x10" > /dev/usb/lp0`;
 
     exec(bashCommand, shellOptions, (error, stdout, stderr) => {
         if (error) {
