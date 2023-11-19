@@ -163,7 +163,6 @@ app.post('/update', (req, res) => {
 });
 
 app.get('/print', (req, res) => {    
-    
     db.all(`SELECT ingredients as Variante, COUNT(*) as Anzahl FROM orders WHERE status != 0 GROUP BY ingredients ORDER BY Anzahl DESC`, (err, rows) => {
         if (err) {
           res.status(500).json({ error: err.message });
@@ -179,15 +178,16 @@ app.get('/print', (req, res) => {
         console.log("------------------------------");
         console.log(`Gesamt verkauft: ${sum}`);
         */
-
         let selledProducts = "";
         let sum = 0;
         rows.forEach( row => {
             selledProducts = selledProducts + `${row.Variante}: ${row.Anzahl}\n`;
             sum += Number(row.Anzahl);
         });
+
         printSells(selledProducts, sum);
     });
+
 
     res.send('Server-Funktion erfolgreich ausgelöst');
 });
@@ -205,16 +205,15 @@ function dbUpdateStatus(id, status) {
 
 // functions for printing
 function printOrder(id, ingredients) {
+    
     const bashCommand = 
-`echo -e "\\x1d\\x21\\x22
-OrderNr.:
-${id}
+`echo -e "\\x1b\\x61\\x01\\x1d\\x21\\x11Bestellnummer:\n
+\\x1d\\x21\\x22${id}
 \\x1d\\x21\\x11
 ${ingredients}\n\n
 \\x1d\\x56\\x41\\x10
-\\x1d\\x21\\x22
-OrderNr.:
-${id}
+\\x1d\\x21\\x11Bestellnummer:\n
+\\x1d\\x21\\x22${id}
 \\x1d\\x21\\x11
 ${ingredients}\n\n
 \\x1d\\x56\\x41\\x10" > /dev/usb/lp0`;
@@ -229,6 +228,7 @@ ${ingredients}\n\n
 };
 
 function printSells(selledProducts, sum) {
+    
     const bashCommand = 
 `echo -e "\\x1d\\x21\\x00
 < Anzahl verkaufter Flammkuchen >\n
@@ -240,30 +240,20 @@ Gesamt verkauft: ${sum}\n\n
         if (error) {
         console.error(`Fehler beim Ausführen des Bash-Befehls: ${error}`);
         } else {
-        console.log(sum);
+        console.log(selledProducts);
         }
     });    
 };
 
 
-// Handle Ctrl+C in sehll to gracefully shut down the server
-process.on('SIGINT', () => {
-    console.log(' Received SIGINT. Closing server gracefully...');
-    
+process.on('SIGiNT', () => {
+    console.log(" Received SiGINT. Closing server...");
+
     // Close the servers
-    frontServer.close(() => {
-        console.log('Frontend Server closed. Exiting process...');
+    frontServer.close( () => {
+        console.log("Frontend Server closed");
     });
-    socketServer.close(() => {
-        console.log('Websocket Server closed. Exiting process...');
+    socketServer.close( () => {
+        console.log("Websocket Server closed");
     });
 });
-
-
-/*
-Overview print commands:
-Schriftgröße x1: \\x1d\\x21\\x00
-Schriftgröße x2: \\x1d\\x21\\x11
-Schriftgröße x2: \\x1d\\x21\\x22
-Paper-Cut: \\x1d\\x56\\x41\\x10
-*/

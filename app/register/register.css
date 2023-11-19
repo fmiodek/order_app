@@ -85,8 +85,9 @@ h1 {
     background-color: white;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 2vw;
+    font-size: 1.7vw;
     margin: 20px auto;
+    margin-left: 1px;
     z-index: 1;
 }
 
@@ -144,7 +145,7 @@ select {
     border-radius: 10px;
     margin: 5px;
     color: rgb(0, 0, 0);
-    font-size: 3rem;
+    font-size: 4vw;
     font-weight: 800;
     display: flex;
     justify-content: space-between;
@@ -155,6 +156,9 @@ select {
 .order-element button {
     width: 4vw;
     height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 10px;
     cursor: pointer;
     font-size: 3vw;
@@ -187,14 +191,14 @@ i {
 }
 
 #popup {
-    width: 50%;
+    width: 50vw;
     height: 100%;
     display: none;
+    justify-content: space-around;
+    flex-wrap: wrap;
     position: fixed;
     top: 0;
-    left: 25%;
-    transform: translate(-50%,0%);
-    padding: 20px;
+    left: 0;
     background-color: rgb(60, 60, 60);
     border-right: 1px solid white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -202,16 +206,18 @@ i {
 }
 
 #popup h2 {
-    margin-bottom: 20px;
-    margin-left: 12vw;
+    flex: 1 0 100%;
+    text-align: center;
+    margin-top: 10px;
     color: black;
     font-size: 2rem;
     color: white;
 }
 
 #popup label {
-    font-size: 2rem;
-    margin-left: 15vw;
+    flex: 1 0 40%;
+    margin-left: 3vw;
+    font-size: 1.5rem;
     color: white;
     display: flex;
     text-align: center;
@@ -219,16 +225,16 @@ i {
 }
 
 #popup input {
-    margin: 5px;
     height: 3rem;
     width: 3rem;
+    margin-right: 3px;
 }
 
 #popup button {
+    flex: 1 0 90%;
     margin: 20px;
     font-size: 2rem;
     padding: 10px;
-    margin-left: 12vw;
     border-radius: 10px;
     background-color: white;
 }

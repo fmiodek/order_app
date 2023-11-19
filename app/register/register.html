@@ -4,13 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kasse</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <link rel="icon" href="../images/tus_icon.png">
+    <link rel="stylesheet" href="../all.css" />
     <link rel="stylesheet" href="./register.css" />
   </head>
   <body>
@@ -20,8 +15,9 @@
         <div class="options">
           <button id="opt1" class="option">Klassisch</button>
           <button id="opt2" class="option">mit Kaese</button>
-          <button id="opt3" class="option">Vegi</button>
-          <button id="opt4" class="option">Individuell</button>
+          <button id="opt3" class="option">Vegetarisch</button>
+          <button id="opt4" class="option">Apfel</button>
+          <button id="opt5" class="option">Individuell</button>
         </div>
         <div class="input-container">
           <p>Bestell-Nr.: <span class="order-num">1</span></p>
@@ -46,11 +42,13 @@
       <br>
       <label><input type="checkbox" name="option3">Kaese</label>
       <br>
-      <label><input type="checkbox" name="option1">Lauch</label>
+      <label><input type="checkbox" name="option4">Lauch</label>
       <br>
-      <label><input type="checkbox" name="option1">Pilze</label>
+      <label><input type="checkbox" name="option5">Pilze</label>
       <br>
-      <label><input type="checkbox" name="option1">Tomaten</label>
+      <label><input type="checkbox" name="option6">Tomaten</label>
+      <br>
+      <label><input type="checkbox" name="option7">Paprika</label>
       <br>
       <button id="closeIndividual">Auswahl Bestätigen</button>
     </div>
@@ -59,7 +57,7 @@
       <button id="confirmDelete">Ja</button>
       <button id="cancelDelete">Nein</button>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js" integrity="sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="./node_modules/socket.io-client/dist/socket.io.js"></script>
     <script src="./register.js"></script>
   </body>
 </html>

@@ -5,12 +5,10 @@ const socket = io(`ws://${serverIP}:${serverPort}`);
 
 // Constants for getIngredients method -> easy to change
 const OPTION1 = document.getElementById("opt1").innerText; // "Klassisch"
-const OPTION2 = document.getElementById("opt2").innerText; // "mit Kaese"
+const OPTION2 = document.getElementById("opt2").innerText; // "mit Käse"
 const OPTION3 = document.getElementById("opt3").innerText; // "Vegi"
-const OPTION4 = document.getElementById("opt4").innerText; // "Individuell"
-const Zutaten1 = ["Speck", "Zwiebeln"];
-const Zutaten2 = ["Speck", "Zwiebeln", "Kaese"];
-const Zutaten3 = ["Lauch", "Pilze"];
+const OPTION4 = document.getElementById("opt4").innerText; // "Apfel"
+const OPTION5 = document.getElementById("opt5").innerText; // "Individuell"
 
 // Elements
 const ulZubereitung = document.querySelector(".ul-zubereitung");
@@ -18,7 +16,7 @@ const ulAbholung = document.querySelector(".ul-abholung");
 
 const addBtn = document.querySelector("#enter");
 const optionBtns = document.querySelectorAll(".option");
-const individualBtn = document.querySelector("#opt4");
+const individualBtn = document.querySelector("#opt5");
 const closeIndividualBtn = document.querySelector("#closeIndividual");
 const printInfoBtn = document.querySelector("#info");
 
@@ -74,7 +72,7 @@ function addOrder() {
     cancelBtn.classList.add("cancel")
     let cancelIcon = document.createElement("i");
     cancelIcon.classList.add("fas");
-    cancelIcon.classList.add("fa-x");
+    cancelIcon.classList.add("fa-times");
     cancelBtn.appendChild(cancelIcon);
 
     let orderText = document.createElement("span");
@@ -199,6 +197,10 @@ function getIngredients(selectedProduct) {
             ingredients.push(OPTION3);
             break;
         case OPTION4:
+            //ingredients.push(...Zutaten4);
+            ingredients.push(OPTION4);
+            break;
+        case OPTION5:
             checkBoxes.forEach( checkbox => {
                 if (checkbox.checked) {
                     let ingredient = checkbox.parentElement.innerText;
@@ -212,7 +214,7 @@ function getIngredients(selectedProduct) {
 }
 
 function openPopup() {
-    document.getElementById('popup').style.display = 'block';
+    document.getElementById('popup').style.display = 'flex';
 }
 
 function closePopup() {
@@ -322,7 +324,7 @@ function loadItem(id, status) {
     cancelBtn.classList.add("cancel")
     let cancelIcon = document.createElement("i");
     cancelIcon.classList.add("fas");
-    cancelIcon.classList.add("fa-x");
+    cancelIcon.classList.add("fa-times");
     cancelBtn.appendChild(cancelIcon);
 
     let orderText = document.createElement("span");
