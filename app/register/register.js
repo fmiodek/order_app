@@ -43,7 +43,7 @@ printInfoBtn.addEventListener("click", printInfo);
 
 
 function addOrder() {
-    const orderNum = orderNumElement.innerText;
+    const orderNum = Number(orderNumElement.innerText);
 
     // check if a product is selected
     let selected = false;
@@ -100,10 +100,10 @@ function addOrder() {
     currentItems[0][orderNum] = ingredients;
 
     //send data to backend for database
-    insertOrder(Number(orderNum), ingredients);
+    insertOrder(orderNum, ingredients);
 
     // increment order Number
-    orderNumElement.innerText = Number(orderNum) + 1;
+    orderNumElement.innerText = orderNum + 1;
     
     // remove click animation
     selectedBtn.classList.remove("clicked");
@@ -126,19 +126,19 @@ function ready(e) {
         // append element for pick-up
         ulAbholung.appendChild(clickedElement);
         // get the data (id: [product, amount]) an pass it to itemsAbholung
-        let id = clickedElement.innerText;
+        let id = Number(clickedElement.innerText);
         currentItems[1][id] = currentItems[0][id];
         delete currentItems[0][id];
         // send data to backend
-        updateOrder(Number(id), 2);
+        updateOrder(id, 2);
     } else if (currentUl.classList[0] === "ul-abholung") {
         // delete element
         clickedElement.remove();
         // remove from current items list
-        let id = clickedElement.innerText;
+        let id = Number(clickedElement.innerText);
         delete currentItems[1][id];
         // send data to backend
-        updateOrder(Number(id), 3);
+        updateOrder(id, 3);
     }
     // send data to display
     sendData(currentItems);
@@ -156,10 +156,10 @@ function cancel(e) {
             // delete Element
             clickedElement.remove();
             // remove from current items list
-            let id = clickedElement.innerText;
+            let id = Number(clickedElement.innerText);
             delete currentItems[0][id];
             // send data to backend
-            updateOrder(Number(id), 0);
+            updateOrder(id, 0);
             // send data to display
             sendData(currentItems);
             closeDeletePopup();
@@ -170,11 +170,11 @@ function cancel(e) {
         // append element back to "in production" list
         ulZubereitung.appendChild(clickedElement);
         // get the data (id: [product, amount]) an pass it to itemsZubereitung
-        let id = clickedElement.innerText;
+        let id = Number(clickedElement.innerText);
         currentItems[0][id] = currentItems[1][id];
         delete currentItems[1][id];
         // send data to backend
-        updateOrder(Number(id), 1);
+        updateOrder(id, 1);
         // send data to display
         sendData(currentItems);
     }
@@ -233,6 +233,7 @@ function closeDeletePopup() {
 // Websocket functions
 function sendData(dataToSend) {
     socket.emit("message", dataToSend);
+    console.log(dataToSend);
 }
 
 // Backend
