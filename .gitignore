@@ -1,2 +1,4 @@
 *.DS_Store
 test.txt
+app/webfonts/
+app/all.css

@@ -150,23 +150,65 @@ app.get('/print', (req, res) => {
           res.status(500).json({ error: err.message });
           return;
         }
-        /*
-        console.log("Anzahl verkaufter Flammkuchen");
-        console.log("-----------------------------");
-        rows.forEach( row => {
-            console.log(`${row.Variante}: ${row.Anzahl}`);
-            sum += Number(row.Anzahl);
-        });
-        console.log("------------------------------");
-        console.log(`Gesamt verkauft: ${sum}`);
-        */
+        
         let selledProducts = "";
         let sum = 0;
+        
+        // individual ingredients
+        let zwiebeln = ["Zwiebeln", 0];
+        let speck = ["Speck", 0];
+        let kaese = ["Kaese", 0];
+        let pilze = ["Pilze", 0];
+        let paprika = ["Paprika", 0];
+        let lauch = ["Lauch", 0];
+        let tomaten = ["Tomaten", 0];
+        let individualIngredients = [zwiebeln, speck, kaese, pilze, paprika, lauch, tomaten];
+        
         rows.forEach( row => {
-            selledProducts = selledProducts + `${row.Variante}: ${row.Anzahl}\n`;
+            let standard = ["Klassisch", "mit Kaese", "Vegetarisch", "Apfel"];
+            if (standard.includes(row.Variante)) {
+                selledProducts = selledProducts + `${row.Variante}: ${row.Anzahl}\n`;
+            } 
+            else {
+                let individuals = row.Variante.split(", ");
+                console.log(individuals);
+                individuals.forEach(individual => {
+                    switch(individual) {
+                        case "Speck":
+                            speck[1] += row.Anzahl
+                            break;
+                        case "Zwiebeln":
+                            zwiebeln[1] += row.Anzahl;
+                            break;
+                        case "Kaese":
+                            kaese[1] += row.Anzahl;
+                            break;
+                        case "Pilze":
+                            pilze[1] += row.Anzahl;
+                            break;
+                        case "Paprika":
+                            paprika[1] += row.Anzahl;
+                            break;
+                        case "Lauch":
+                            lauch[1] += row.Anzahl;
+                            break;
+                        case "Tomaten":
+                            tomaten[1] += row.Anzahl;
+                            break;
+                    }
+                })
+            }
             sum += Number(row.Anzahl);
         });
-
+        // sort individuals descending
+        individualIngredients = individualIngredients.sort( (a,b) => {
+            return b[1] - a[1];
+        })
+        // add to printed string
+        individualIngredients.forEach( ing => {
+            selledProducts = selledProducts + `${ing[0]}: ${ing[1]}\n`;
+        })
+        
         printSells(selledProducts, sum);
     });
 

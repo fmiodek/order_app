@@ -13,6 +13,8 @@ const OPTION5 = document.getElementById("opt5").innerText; // "Individuell"
 // Elements
 const ulZubereitung = document.querySelector(".ul-zubereitung");
 const ulAbholung = document.querySelector(".ul-abholung");
+var arrayZubereitung = [] // array for sorting the unordered lists
+var arrayAbholung = [] // array for sorting the unordered lists
 
 const addBtn = document.querySelector("#enter");
 const optionBtns = document.querySelectorAll(".option");
@@ -92,6 +94,8 @@ function addOrder() {
     orderDiv.appendChild(orderText);
     orderDiv.appendChild(readyBtn);
 
+    
+    arrayZubereitung.push(orderDiv);
     ulZubereitung.appendChild(orderDiv);
 
     // save the data (ingredients of the order) in currenItems Object (in itemsZubereitung)
@@ -123,20 +127,38 @@ function ready(e) {
     let currentUl = clickedElement.parentNode;
     
     if (currentUl.classList[0] === "ul-zubereitung") {
+        
         // append element for pick-up
-        ulAbholung.appendChild(clickedElement);
-        // get the data (id: [product, amount]) an pass it to itemsAbholung
+        arrayAbholung.push(clickedElement);
+        arrayAbholung.sort( (a,b) => {
+            return Number(a.innerText) - Number(b.innerText);
+        })
+        arrayAbholung.forEach( element => {
+            ulAbholung.appendChild(element);
+        })
+        
+        // get the data (id: [product, amount]), pass it to itemsAbholung an delete it from Zubereitung
         let id = Number(clickedElement.innerText);
         currentItems[1][id] = currentItems[0][id];
         delete currentItems[0][id];
+        arrayZubereitung = arrayZubereitung.filter( element => {
+            return Number(element.innerText) != id;
+        })
+
         // send data to backend
         updateOrder(id, 2);
     } else if (currentUl.classList[0] === "ul-abholung") {
+        
         // delete element
         clickedElement.remove();
-        // remove from current items list
+        
+        // remove from current items list and sorting-helper-array
         let id = Number(clickedElement.innerText);
         delete currentItems[1][id];
+        arrayAbholung = arrayAbholung.filter( element => {
+            return Number(element.innerText) != id;
+        })
+
         // send data to backend
         updateOrder(id, 3);
     }
@@ -155,9 +177,14 @@ function cancel(e) {
         confirmDeleteBtn.addEventListener("click", () => {
             // delete Element
             clickedElement.remove();
-            // remove from current items list
+            
+            // remove from current items list and sorting-helper-array
             let id = Number(clickedElement.innerText);
             delete currentItems[0][id];
+            arrayZubereitung = arrayZubereitung.filter( element => {
+                return Number(element.innerText) != id;
+            })
+
             // send data to backend
             updateOrder(id, 0);
             // send data to display
@@ -168,11 +195,22 @@ function cancel(e) {
 
     } else if (currentUl.classList[0] === "ul-abholung") {
         // append element back to "in production" list
-        ulZubereitung.appendChild(clickedElement);
-        // get the data (id: [product, amount]) an pass it to itemsZubereitung
+        arrayZubereitung.push(clickedElement);
+        arrayZubereitung.sort( (a,b) => {
+            return Number(a.innerText) - Number(b.innerText);
+        })
+        arrayZubereitung.forEach( element => {
+            ulZubereitung.appendChild(element);
+        })
+        
+        // get the data (id: [product, amount]), pass it to itemsZubereitung and delete from itemsAbholung
         let id = Number(clickedElement.innerText);
         currentItems[0][id] = currentItems[1][id];
         delete currentItems[1][id];
+        arrayAbholung = arrayAbholung.filter( element => {
+            return Number(element.innerText) != id;
+        })
+
         // send data to backend
         updateOrder(id, 1);
         // send data to display
@@ -346,9 +384,11 @@ function loadItem(id, status) {
     orderDiv.appendChild(readyBtn);
 
     if (status === 1) {
+        arrayZubereitung.push(orderDiv);
         ulZubereitung.appendChild(orderDiv);
     }
     else if (status === 2) {
+        arrayAbholung.push(orderDiv);
         ulAbholung.appendChild(orderDiv);
     }
     // send the data over to the Display
