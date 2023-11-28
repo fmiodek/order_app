@@ -171,7 +171,6 @@ app.get('/print', (req, res) => {
             } 
             else {
                 let individuals = row.Variante.split(", ");
-                console.log(individuals);
                 individuals.forEach(individual => {
                     switch(individual) {
                         case "Speck":
@@ -245,9 +244,7 @@ ${ingredients}\n\n
     exec(bashCommand, shellOptions, (error, stdout, stderr) => {
         if (error) {
         console.error(`Fehler beim Ausführen des Bash-Befehls: ${error}`);
-        } else {
-        console.log(id);
-        }
+        } 
     });
 };
 
@@ -264,7 +261,7 @@ Gesamt verkauft: ${sum}\n\n
         if (error) {
         console.error(`Fehler beim Ausführen des Bash-Befehls: ${error}`);
         } else {
-        console.log(selledProducts);
+        console.log("Drucke Verkaufsübersicht");
         }
     });    
 };
@@ -281,7 +278,6 @@ io.on("connection", socket => {
     console.log("a user connected");
 
     socket.on("message", message => {
-        console.log(message)
         io.emit("message", message);
     });
 })

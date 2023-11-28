@@ -14,18 +14,6 @@ socket.on("message", data => {
 });
 
 function updateUl (ul, data) {
-    /*
-    ul.innerHTML = "";
-    data.forEach(element => {
-        let orderDiv = document.createElement("div");
-        orderDiv.classList.add("order-element");
-        let orderText = document.createElement("span");
-        orderText.innerHTML = element.id;
-        orderDiv.appendChild(orderText);
-        ul.appendChild(orderDiv);
-    });
-    */
-    
     ul.innerHTML = "";
     Object.keys(data).forEach( (key) => {
         let orderDiv = document.createElement("div");

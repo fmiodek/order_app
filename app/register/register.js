@@ -247,7 +247,6 @@ function getIngredients(selectedProduct) {
             })
             break;
     }
-    console.log(ingredients);
     return ingredients;
 }
 
@@ -271,7 +270,6 @@ function closeDeletePopup() {
 // Websocket functions
 function sendData(dataToSend) {
     socket.emit("message", dataToSend);
-    console.log(dataToSend);
 }
 
 // Backend
@@ -324,7 +322,6 @@ function loadData() {
         return response.json();
       })
       .then(data => {
-        console.log('Data fetched:', data);
         data.prep.forEach( item => {
             let id = item["id"];
             let status = item["status"];
@@ -350,11 +347,13 @@ function loadItem(id, status) {
     const orderNum = id;
 
     // create order element
-    /*<div class="order-element">
+    /*
+    <div class="order-element">
         <button class="cancel"><i class="fas fa-x"></i></button>
         <span>{Bestellnummer}</span>
         <button class="ready"><i class="fas fa-arrow-right"></i></button>
-    </div>*/
+    </div>
+    */
 
     let orderDiv = document.createElement("div");
     orderDiv.classList.add("order-element");
