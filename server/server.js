@@ -153,47 +153,25 @@ app.get('/print', (req, res) => {
         
         let selledProducts = "";
         let sum = 0;
-        
-        // individual ingredients
-        let zwiebeln = ["Zwiebeln", 0];
-        let speck = ["Speck", 0];
-        let kaese = ["Kaese", 0];
-        let pilze = ["Pilze", 0];
-        let paprika = ["Paprika", 0];
-        let lauch = ["Lauch", 0];
-        let tomaten = ["Tomaten", 0];
-        let individualIngredients = [zwiebeln, speck, kaese, pilze, paprika, lauch, tomaten];
+        let standard = ["Klassisch", "mit Kaese", "Vegetarisch", "Apfel"];
+        let individualIngredients = [];
         
         rows.forEach( row => {
-            let standard = ["Klassisch", "mit Kaese", "Vegetarisch", "Apfel"];
             if (standard.includes(row.Variante)) {
+                // simply print the amount of selled standards
                 selledProducts = selledProducts + `${row.Variante}: ${row.Anzahl}\n`;
             } 
             else {
+                // split up in individual ingredients
                 let individuals = row.Variante.split(", ");
                 individuals.forEach(individual => {
-                    switch(individual) {
-                        case "Speck":
-                            speck[1] += row.Anzahl
-                            break;
-                        case "Zwiebeln":
-                            zwiebeln[1] += row.Anzahl;
-                            break;
-                        case "Kaese":
-                            kaese[1] += row.Anzahl;
-                            break;
-                        case "Pilze":
-                            pilze[1] += row.Anzahl;
-                            break;
-                        case "Paprika":
-                            paprika[1] += row.Anzahl;
-                            break;
-                        case "Lauch":
-                            lauch[1] += row.Anzahl;
-                            break;
-                        case "Tomaten":
-                            tomaten[1] += row.Anzahl;
-                            break;
+                    let arrayIndex = individualIngredients.findIndex( ing => {
+                        return ing[0] === individual;
+                    })
+                    if (arrayIndex === -1) {
+                        individualIngredients.push([individual, row.Anzahl]);
+                    } else {
+                        individualIngredients[arrayIndex][1] += row.Anzahl;
                     }
                 })
             }
@@ -207,7 +185,6 @@ app.get('/print', (req, res) => {
         individualIngredients.forEach( ing => {
             selledProducts = selledProducts + `${ing[0]}: ${ing[1]}\n`;
         })
-        
         printSells(selledProducts, sum);
     });
 
